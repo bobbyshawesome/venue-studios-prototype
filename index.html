@@ -100,16 +100,28 @@
     }
 
     /* ===== SCREEN CHROME ===== */
+    /* Only the status bar is truly fixed. Currency bar scrolls with content. */
     .chrome-status {
       position: absolute;
       top: 0; left: 0; right: 0;
       z-index: 100;
       height: 44px;
+      background: var(--peach-bg);
+      pointer-events: none;
     }
-    .chrome-status img {
+    .chrome-status img.status-img {
       width: 100%; height: 44px;
       display: block;
       object-fit: cover;
+    }
+    /* Subtle gradient fade just below status bar so content scrolls under cleanly */
+    .chrome-status::after {
+      content: '';
+      position: absolute;
+      bottom: -12px; left: 0; right: 0;
+      height: 12px;
+      background: linear-gradient(to bottom, var(--peach-bg), rgba(254,222,207,0));
+      pointer-events: none;
     }
 
     .chrome-nav {
@@ -139,15 +151,13 @@
 
     /* ===== A1 UNIFIED SCREEN ===== */
     #screen-a1 {
-      background-image:
-        linear-gradient(180deg, rgba(255,255,255,0) 30%, rgb(255,255,255) 56%),
-        linear-gradient(208deg, rgba(255,228,214,0) 24%, rgb(255,228,214) 54%),
-        linear-gradient(90deg, rgb(255,228,214), rgb(255,228,214));
+      background: var(--peach-bg);
     }
+    /* No gradient on the body — peach bg stays consistent throughout */
 
-    /* --- Currency bar --- */
+    /* --- Currency bar scrolls with content --- */
     .a1-currency {
-      padding-top: 44px;
+      padding-top: 44px; /* clears fixed status bar */
     }
     .a1-currency img {
       width: 100%; height: auto; display: block;
@@ -243,6 +253,18 @@
       transition: transform 100ms ease;
     }
     .btn-a1:active { transform: scale(0.96); }
+    @media (hover: hover) {
+      .btn-a1:hover { transform: scale(1.03); filter: brightness(1.06); }
+      .btn-a1-explore:hover { transform: scale(1.03); filter: brightness(1.06); }
+      .btn-a1-maybe:hover { color: var(--coral); }
+      .btn-a1-join:hover { transform: scale(1.02); filter: brightness(1.06); }
+      .btn-a1-explore-studio:hover { transform: scale(1.02); filter: brightness(1.06); }
+      .a1-teaser:hover { opacity: 0.85; }
+      .a1-teaser:hover .a1-teaser-text { color: var(--coral); }
+      .a1-carousel-arrow:hover { background: white; box-shadow: 0 2px 12px rgba(101,77,78,0.2); }
+      .btn-begin:hover { transform: scale(1.03); filter: brightness(1.06); }
+      .btn-yellow-pill:hover { transform: scale(1.03); filter: brightness(1.06); }
+    }
     .btn-a1-share {
       background: linear-gradient(162deg, #77DBD2, #69BFCC);
       box-shadow: inset 0 -2px 6px rgba(0,0,0,0.1), 0 4px 14px rgba(119,219,210,0.28);
@@ -394,6 +416,7 @@
       overflow: hidden;
       display: none;
       opacity: 0;
+      box-shadow: 0 4px 16px rgba(239, 145, 128, 0.12);
     }
     .a1-browse-card.visible {
       display: block;
@@ -411,6 +434,7 @@
       height: 180px;
       overflow: hidden;
       border-radius: 16px 16px 0 0;
+      margin: 0;
     }
     .a1-carousel-track {
       display: flex;
@@ -428,14 +452,7 @@
       object-fit: cover;
       display: block;
     }
-    /* Tinted variant for slide 2 */
-    .a1-carousel-slide.tinted img {
-      filter: hue-rotate(40deg) saturate(1.2) brightness(0.9);
-    }
-    /* Tinted variant for slide 3 */
-    .a1-carousel-slide.tinted2 img {
-      filter: hue-rotate(-20deg) saturate(1.4) brightness(0.85);
-    }
+    /* All slides use real images from Figma — no tinting needed */
 
     /* Carousel arrows */
     .a1-carousel-arrow {
@@ -474,9 +491,9 @@
       width: 8px; height: 8px;
     }
 
-    /* Studio body */
+    /* Studio body — tighter padding matching Figma */
     .a1-browse-body {
-      padding: 4px 20px 16px;
+      padding: 4px 16px 16px;
     }
     .a1-studio-name {
       font-size: 18px;
@@ -491,33 +508,51 @@
       margin-bottom: 12px;
     }
 
-    /* Progress bar */
-    .a1-progress-track {
-      height: 12px;
-      background: var(--warm-track);
-      border-radius: 6px;
+    /* Progress bar with ellipse milestone dots */
+    .a1-progress-wrap {
       position: relative;
-      margin-bottom: 14px;
+      margin: 0 12px 14px;
+      height: 16px;
+    }
+    .a1-progress-track {
+      position: absolute;
+      top: 50%; left: 6px; right: 6px;
+      transform: translateY(-50%);
+      height: 10px;
+      background: var(--warm-track);
+      border-radius: 5px;
       overflow: hidden;
     }
     .a1-progress-fill {
       height: 100%;
-      border-radius: 6px;
+      border-radius: 5px;
       background: linear-gradient(90deg, var(--green), var(--aqua));
       transition: width 400ms ease;
     }
-    .a1-progress-notches {
+    .a1-progress-dots {
       position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
+      top: 50%; left: 0; right: 0;
+      transform: translateY(-50%);
       display: flex;
       justify-content: space-between;
-      padding: 0 10%;
       pointer-events: none;
+      z-index: 2;
     }
-    .a1-progress-notches .notch {
-      width: 2px;
-      background: rgba(255,255,255,0.6);
-      border-radius: 1px;
+    .a1-progress-dots .pdot {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: white;
+      border: 2.5px solid var(--warm-track);
+      flex-shrink: 0;
+      box-shadow: 0 1px 3px rgba(101,77,78,0.1);
+    }
+    .a1-progress-dots .pdot.reached {
+      border-color: var(--aqua);
+      background: white;
+    }
+    .a1-progress-dots .pdot.filled {
+      background: var(--aqua);
+      border-color: var(--aqua);
     }
 
     /* Gallery */
@@ -533,18 +568,18 @@
       object-fit: cover;
     }
 
-    /* Join button */
+    /* Join button — full width, generous height */
     .btn-a1-join {
       display: block;
       width: 100%;
-      height: 40px;
+      height: 46px;
       background: linear-gradient(168deg, #FFC226, #F59E4D);
       box-shadow: inset 0 -2px 6px rgba(0,0,0,0.08), 0 4px 14px rgba(255,194,38,0.3);
       border: none;
       border-radius: 31.5px;
       font-family: 'Poppins', sans-serif;
-      font-size: 15px;
-      font-weight: 600;
+      font-size: 16px;
+      font-weight: 700;
       color: white;
       cursor: pointer;
       transition: transform 100ms ease;
@@ -555,7 +590,7 @@
     .a1-join-overlay {
       position: absolute;
       inset: 0;
-      background: rgba(254, 222, 207, 0.82);
+      background: rgba(60, 40, 38, 0.72);
       z-index: 200;
       display: flex;
       align-items: center;
@@ -935,15 +970,15 @@
     <!-- ===== A1: VOTING CONFIRMATION — MULTI-STATE ===== -->
     <div class="screen" id="screen-a1" data-screen="a1-voting">
 
-      <!-- Fixed status bar -->
+      <!-- Fixed status bar only -->
       <div class="chrome-status">
-        <img src="assets/images/status-bar.png" alt="">
+        <img class="status-img" src="assets/images/status-bar.png" alt="">
       </div>
 
       <!-- Scrollable body -->
       <div class="screen-body" id="a1-body">
 
-        <!-- Currency bar -->
+        <!-- Currency bar (scrolls with content) -->
         <div class="a1-currency">
           <img src="assets/images/currency-bar.png" alt="">
         </div>
@@ -1015,22 +1050,22 @@
               <div class="a1-carousel-slide">
                 <img src="assets/images/studio-preview-cozy.png" alt="Cozy Corners">
               </div>
-              <!-- Slide 2: Beautiful Bonanza (tinted dining room) -->
-              <div class="a1-carousel-slide tinted">
-                <img src="assets/images/room-dining.png" alt="Beautiful Bonanza">
+              <!-- Slide 2: Beautiful Bonanza -->
+              <div class="a1-carousel-slide">
+                <img src="assets/images/studio-preview-bonanza.png" alt="Beautiful Bonanza">
               </div>
-              <!-- Slide 3: Sunset Sanctuary (alternate tint) -->
-              <div class="a1-carousel-slide tinted2">
-                <img src="assets/images/room-dining.png" alt="Sunset Sanctuary">
+              <!-- Slide 3: Sunset Sanctuary -->
+              <div class="a1-carousel-slide">
+                <img src="assets/images/gallery-1.png" alt="Sunset Sanctuary">
               </div>
             </div>
             <!-- Left arrow -->
             <button class="a1-carousel-arrow left" id="a1-arrow-left" onclick="a1CarouselPrev()">
-              <img src="assets/images/carousel-left.png" alt="Previous">
+              <img src="assets/images/carousel-left.svg" alt="Previous">
             </button>
             <!-- Right arrow -->
             <button class="a1-carousel-arrow right" id="a1-arrow-right" onclick="a1CarouselNext()">
-              <img src="assets/images/carousel-right.png" alt="Next">
+              <img src="assets/images/carousel-right.svg" alt="Next">
             </button>
           </div>
 
@@ -1046,15 +1081,16 @@
             <div class="a1-studio-name" id="a1-studio-name">Cozy Corners</div>
             <div class="a1-studio-meta" id="a1-studio-meta">8 of 15 designers · 12 milestones hit this week!</div>
 
-            <!-- Progress bar -->
-            <div class="a1-progress-track">
-              <div class="a1-progress-fill" id="a1-progress-fill" style="width: 53%;"></div>
-              <div class="a1-progress-notches">
-                <div class="notch"></div>
-                <div class="notch"></div>
-                <div class="notch"></div>
-                <div class="notch"></div>
-                <div class="notch"></div>
+            <!-- Progress bar with ellipse milestone dots -->
+            <div class="a1-progress-wrap">
+              <div class="a1-progress-track">
+                <div class="a1-progress-fill" id="a1-progress-fill" style="width: 53%;"></div>
+                <div class="a1-progress-dots">
+                  <div class="pdot filled"></div>
+                  <div class="pdot reached"></div>
+                  <div class="pdot"></div>
+                  <div class="pdot"></div>
+                </div>
               </div>
             </div>
 
@@ -1481,6 +1517,27 @@
       a1CarouselUpdate(true);
     }
   }
+
+  // Swipe/drag support for carousel
+  (function() {
+    var carousel = document.querySelector('.a1-carousel');
+    if (!carousel) return;
+    var startX = 0, isDragging = false;
+    carousel.addEventListener('touchstart', function(e) { startX = e.touches[0].clientX; isDragging = true; });
+    carousel.addEventListener('touchend', function(e) {
+      if (!isDragging) return;
+      isDragging = false;
+      var diff = startX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 40) { diff > 0 ? a1CarouselNext() : a1CarouselPrev(); }
+    });
+    carousel.addEventListener('mousedown', function(e) { startX = e.clientX; isDragging = true; e.preventDefault(); });
+    carousel.addEventListener('mouseup', function(e) {
+      if (!isDragging) return;
+      isDragging = false;
+      var diff = startX - e.clientX;
+      if (Math.abs(diff) > 40) { diff > 0 ? a1CarouselNext() : a1CarouselPrev(); }
+    });
+  })();
 
   /* --- Join dialog --- */
 
