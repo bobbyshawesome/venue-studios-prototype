@@ -1,0 +1,7 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 25 38.5508" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Frame 1042">
+<path id="Exclude" d="M0 0C2.79102e-06 4.41828 3.58172 8 8 8H0V0Z" fill="var(--fill-0, #FFFDFC)"/>
+<path id="Union" d="M4.57129 8C10.8831 8 16 13.1169 16 19.4287C15.9999 25.7405 10.8831 30.8574 4.57129 30.8574H0V8H4.57129Z" fill="var(--fill-0, #FFFDFC)"/>
+<path id="Exclude_2" d="M7.69336 30.8574C3.44444 30.8574 1.35242e-05 34.3019 0 38.5508V30.8574H7.69336Z" fill="var(--fill-0, #FFFDFC)"/>
+</g>
+</svg>
