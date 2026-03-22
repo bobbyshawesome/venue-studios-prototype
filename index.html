@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>Venue — Design Studios Preview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700&display=swap" rel="stylesheet">
+  <style>
+    /* ========== RESET & BASE ========== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      font-family: 'Poppins', sans-serif;
+      background: #F6EEE6;
+      color: #654D4E;
+      overflow: hidden;
+      height: 100%;
+      width: 100%;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+      user-select: none;
+    }
+
+    /* ========== DESIGN TOKENS ========== */
+    :root {
+      --coral: #EF9180;
+      --yellow: #FFC236;
+      --cream: #F6EEE6;
+      --orange: #F59E4D;
+      --green: #72DA8E;
+      --brown: #654D4E;
+      --aqua: #84C9C9;
+      --peach-bg: #FEDECF;
+      --muted: #A3898C;
+      --radius-card: 30px;
+      --radius-btn: 32px;
+      --radius-sm: 12px;
+    }
+
+    /* ========== LAYOUT ========== */
+    #app {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--cream);
+    }
+
+    /* Desktop: iPhone frame — scales to fit viewport */
+    .phone-frame {
+      position: relative;
+      width: 375px;
+      height: 812px;
+      border-radius: 50px;
+      overflow: hidden;
+      background: var(--peach-bg);
+      box-shadow: 0 0 0 12px #1a1a1a, 0 0 0 14px #333, 0 30px 80px rgba(101, 77, 78, 0.3);
+      flex-shrink: 0;
+    }
+    /* Scale applied via JS */
+
+    /* Notch */
+    .phone-frame::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 160px;
+      height: 34px;
+      background: #1a1a1a;
+      border-radius: 0 0 20px 20px;
+      z-index: 100;
+    }
+
+    /* Mobile: fill screen */
+    @media (max-width: 480px) {
+      #app { align-items: stretch; }
+      .phone-frame {
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+        box-shadow: none;
+      }
+      .phone-frame::before { display: none; }
+    }
+
+    /* ========== SCREENS ========== */
+    .screen {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 200ms ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+    }
+    .screen.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Screen image (full-screen Figma export) */
+    .screen-image {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* Scrollable screen container */
+    .screen-scroll {
+      width: 100%;
+      height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* ========== LANDING PAGE ========== */
+    .landing {
+      background: var(--cream);
+      text-align: center;
+      padding: 40px 30px 36px;
+      justify-content: center;
+      gap: 32px;
+    }
+    .landing-logos {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+    .landing-logos img.venue-logo {
+      width: 160px;
+      height: auto;
+    }
+    .landing-logos .bobby-logo {
+      width: 44px;
+      height: auto;
+      opacity: 0.5;
+    }
+    .landing-divider {
+      width: 50px;
+      height: 1px;
+      background: var(--muted);
+      opacity: 0.3;
+    }
+    .landing h1 {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--brown);
+      line-height: 1.4;
+    }
+    .landing p {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--muted);
+      line-height: 1.6;
+      max-width: 280px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* ========== BUTTONS ========== */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px 48px;
+      border-radius: var(--radius-btn);
+      border: none;
+      font-family: 'Poppins', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 150ms ease, box-shadow 150ms ease;
+      text-decoration: none;
+    }
+    .btn:active {
+      transform: scale(0.97);
+    }
+    .btn-teal {
+      background: linear-gradient(135deg, #77DBD2, #69BFCC);
+      color: white;
+      box-shadow: 0 6px 20px rgba(119, 219, 210, 0.35);
+    }
+    .btn-yellow {
+      background: linear-gradient(135deg, #FFC226, #F59E4D);
+      color: white;
+      box-shadow: 0 6px 20px rgba(255, 194, 38, 0.35);
+    }
+
+    /* ========== SCENARIO CARDS ========== */
+    .scenario {
+      background: var(--cream);
+      text-align: center;
+      padding: 50px 30px 40px;
+      justify-content: center;
+    }
+    .scenario-label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--coral);
+      margin-bottom: 30px;
+    }
+    .scenario p {
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--brown);
+      line-height: 1.7;
+      max-width: 300px;
+      margin: 0 auto;
+    }
+    .scenario .btn {
+      margin-top: 40px;
+    }
+
+    /* ========== BRANCH CHOICE CARD ========== */
+    .branch-card {
+      background: var(--cream);
+      text-align: center;
+      padding: 50px 30px 40px;
+      justify-content: center;
+    }
+    .branch-card p {
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--brown);
+      line-height: 1.7;
+      max-width: 300px;
+      margin: 0 auto 30px;
+    }
+    .branch-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      align-items: center;
+    }
+    .branch-buttons .btn {
+      width: 260px;
+      padding: 14px 24px;
+      font-size: 15px;
+    }
+
+    /* ========== END SCREEN ========== */
+    .end-screen {
+      background: var(--cream);
+      text-align: center;
+      padding: 60px 30px 40px;
+      justify-content: center;
+    }
+    .end-screen h2 {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--brown);
+      margin-bottom: 16px;
+    }
+    .end-screen p {
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.6;
+      max-width: 280px;
+      margin: 0 auto;
+    }
+    .end-logos {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 40px;
+    }
+    .end-logos img { height: 40px; width: auto; opacity: 0.5; }
+    .end-logos .divider {
+      width: 1px;
+      height: 30px;
+      background: var(--muted);
+      opacity: 0.3;
+    }
+
+    /* ========== TAP ZONES (overlaid on screen images) ========== */
+    .tap-zone {
+      position: absolute;
+      cursor: pointer;
+      z-index: 10;
+      /* Debug: uncomment to see zones */
+      /* background: rgba(255, 0, 0, 0.1); */
+    }
+    .tap-fullscreen {
+      display: none; /* Replaced by click on .screen-scroll */
+    }
+    .screen-scroll {
+      cursor: pointer;
+    }
+
+    /* ========== BACK BUTTON ========== */
+    .back-btn {
+      position: absolute;
+      top: 50px;
+      left: 12px;
+      width: 44px;
+      height: 44px;
+      z-index: 50;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: transparent;
+      border: none;
+    }
+    .back-btn svg {
+      width: 24px;
+      height: 24px;
+    }
+    @media (max-width: 480px) {
+      .back-btn { top: 16px; }
+    }
+
+    /* ========== MICRO-INTERACTIONS ========== */
+
+    /* Invitation card entrance */
+    .invitation-enter {
+      animation: slideUpFade 300ms ease-out forwards;
+    }
+    @keyframes slideUpFade {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Ripple pulse on contribution */
+    .ripple-pulse {
+      animation: ripplePulse 300ms ease-out;
+    }
+    @keyframes ripplePulse {
+      0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 145, 128, 0.4); }
+      50% { transform: scale(1.05); box-shadow: 0 0 12px 4px rgba(239, 145, 128, 0.3); }
+      100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 145, 128, 0); }
+    }
+
+    /* Milestone reward reveal */
+    .milestone-reveal {
+      animation: milestoneReveal 250ms ease-out;
+    }
+    @keyframes milestoneReveal {
+      from { transform: scale(0.85); opacity: 0.7; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    /* ========== ADMIN GEAR (tap log export) ========== */
+    .admin-gear {
+      position: fixed;
+      bottom: 12px;
+      right: 12px;
+      width: 32px;
+      height: 32px;
+      opacity: 0;
+      transition: opacity 200ms;
+      cursor: pointer;
+      z-index: 999;
+      background: none;
+      border: none;
+      color: var(--muted);
+    }
+    .admin-gear:hover { opacity: 0.6; }
+
+    /* ========== SCROLLBAR HIDE ========== */
+    .screen-scroll::-webkit-scrollbar { display: none; }
+    .screen-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* ========== DESKTOP SCENARIO CARD (beside phone) ========== */
+    @media (min-width: 481px) {
+      .scenario-overlay {
+        display: none; /* On desktop, scenarios show inside the phone */
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div id="app">
+  <div class="phone-frame" id="phoneFrame">
+
+    <!-- ==================== LANDING ==================== -->
+    <div class="screen landing active" id="screen-landing" data-screen="landing">
+      <div>
+        <div class="landing-logos">
+          <img src="assets/venue-logo.png" alt="Venue" class="venue-logo">
+          <div class="landing-divider"></div>
+          <img src="assets/bobby-logo.svg" alt="Bobby Shaw" class="bobby-logo">
+        </div>
+        <h1>Welcome to this design preview</h1>
+        <p>You'll be exploring a new feature concept for Venue, a mobile design game. Just tap through naturally — there are no wrong answers.</p>
+      </div>
+      <button class="btn btn-teal" onclick="goTo('screen-scenario-a')">Begin</button>
+    </div>
+
+    <!-- ==================== SCENARIO A ==================== -->
+    <div class="screen scenario" id="screen-scenario-a" data-screen="scenario-a">
+      <div>
+        <div class="scenario-label">Scenario</div>
+        <p>You've been playing Venue for about a week. You enjoy designing rooms and submitting them for voting. It's become your evening wind-down routine.</p>
+        <br>
+        <p>You just finished a design you're proud of and submitted it. Take a look at what's on screen and explore anything that catches your eye.</p>
+      </div>
+      <button class="btn btn-teal" onclick="goTo('screen-a1')">Continue</button>
+    </div>
+
+    <!-- ==================== SECTION A: DISCOVERY ==================== -->
+
+    <!-- A1: Design Sent to Voting (standard) -->
+    <div class="screen" id="screen-a1" data-screen="a1-voting">
+      <div class="screen-scroll" onclick="goTo('screen-a2')">
+        <img src="assets/images/a1-scene1-voting.png" alt="Design Sent to Voting" class="screen-image">
+      </div>
+      <button class="back-btn" onclick="event.stopPropagation(); goBack()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--coral)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+    </div>
+
+    <!-- A2: Design Sent to Voting + Invitation Card -->
+    <div class="screen" id="screen-a2" data-screen="a2-invitation">
+      <div class="screen-scroll" onclick="goTo('screen-a3')">
+        <img src="assets/images/a1-scene1a-invitation.png" alt="Design with others?" class="screen-image invitation-enter">
+      </div>
+      <button class="back-btn" onclick="event.stopPropagation(); goBack()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--coral)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+    </div>
+
+    <!-- A3: Design Studios Intro (dark background) -->
+    <div class="screen" id="screen-a3" data-screen="a3-intro">
+      <div class="screen-scroll" onclick="goTo('screen-a4')">
+        <img src="assets/images/a1-scene2a-intro.png" alt="Design Studios — A warmer way to play" class="screen-image">
+      </div>
+      <button class="back-btn" onclick="event.stopPropagation(); goBack()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+    </div>
+
+    <!-- A4: Studio Browse (Cozy Corners) -->
+    <div class="screen" id="screen-a4" data-screen="a4-browse">
+      <div class="screen-scroll" onclick="goTo('screen-a5')">
+        <img src="assets/images/a1-browse-bonanza.png" alt="Browse Studios" class="screen-image">
+      </div>
+      <button class="back-btn" onclick="event.stopPropagation(); goBack()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--coral)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+    </div>
+
+    <!-- A5: Welcome to Cozy Corners! -->
+    <div class="screen" id="screen-a5" data-screen="a5-welcome">
+      <div class="screen-scroll" onclick="goTo('screen-a6')">
+        <img src="assets/images/a1-scene2c-welcome-full.png" alt="Welcome to Cozy Corners!" class="screen-image">
+      </div>
+      <button class="back-btn" onclick="event.stopPropagation(); goBack()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--coral)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+    </div>
+
+    <!-- A6: Studio Home (first visit, mid-week) -->
+    <div class="screen" id="screen-a6" data-screen="a6-studio-home">
+      <div class="screen-scroll" onclick="goTo('screen-scenario-b')">
+        <img src="assets/images/a1-scene2d-studio-home.png" alt="Studio Home — Cozy Corners" class="screen-image">
+      </div>
+      <button class="back-btn" onclick="event.stopPropagation(); goBack()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--coral)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+    </div>
+
+    <!-- ==================== SCENARIO B ==================== -->
+    <div class="screen scenario" id="screen-scenario-b" data-screen="scenario-b">
+      <div>
+        <div class="scenario-label">Scenario</div>
+        <p>You joined a Design Studio called Cozy Corners a few days ago. You're checking in to see how things are going.</p>
+        <br>
+        <p>Browse around and do whatever feels natural.</p>
+      </div>
+      <button class="btn btn-teal" onclick="goTo('screen-b1')">Continue</button>
+    </div>
+
+    <!-- ==================== SECTION B: HUB STATES ==================== -->
+
+    <!-- B1: Monday — fresh reset -->
+    <div class="screen" id="screen-b1" data-screen="b1-monday">
+      <div class="screen-scroll" onclick="goTo('screen-b2')">
+        <img src="assets/images/a2-scene1-monday.png" alt="Monday — Your studio room awaits!" class="screen-image">
+      </div>
+      <button class="back-btn" onclick="event.stopPropagation(); goBack()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--coral)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+    </div>
+
+    <!-- B2: Mid-week — momentum building -->
+    <div class="screen" id="screen-b2" data-screen="b2-midweek">
+      <div class="screen-scroll" onclick="goTo('screen-b3')">
+        <img src="assets/images/a2-scene2-midweek.png" alt="Mid-week — Color is arriving!" class="screen-image">
+      </div>
+      <button class="back-btn" onclick="event.stopPropagation(); goBack()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--coral)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+    </div>
+
+    <!-- B3: Near milestone -->
+    <div class="screen" id="screen-b3" data-screen="b3-near-milestone">
+      <div class="screen-scroll" onclick="goTo('screen-branch')">
+        <img src="assets/images/a2-scene3-near-milestone.png" alt="Milestone unlocked!" class="screen-image milestone-reveal">
+      </div>
+      <button class="back-btn" onclick="event.stopPropagation(); goBack()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--coral)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+    </div>
+
+    <!-- BRANCH: Choose ending -->
+    <div class="screen branch-card" id="screen-branch" data-screen="branch-choice">
+      <div>
+        <div class="scenario-label">End of the Week</div>
+        <p>It's the end of the week. Your Studio was close to the final milestone. What happens next?</p>
+        <div class="branch-buttons">
+          <button class="btn btn-yellow" onclick="goTo('screen-b4-hit')">The team made it</button>
+          <button class="btn btn-teal" onclick="goTo('screen-b4-short')">The week ended just short</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- B4: Milestone hit -->
+    <div class="screen" id="screen-b4-hit" data-screen="b4-milestone-hit">
+      <div class="screen-scroll" onclick="goTo(seenBothBranches() ? 'screen-scenario-c' : 'screen-branch-return')">
+        <img src="assets/images/a2-scene4-milestone-hit.png" alt="Look what we made this week!" class="screen-image">
+      </div>
+      <button class="back-btn" onclick="event.stopPropagation(); goTo('screen-branch')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--coral)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+    </div>
+
+    <!-- B4b: Week ends short -->
+    <div class="screen" id="screen-b4-short" data-screen="b4-week-short">
+      <div class="screen-scroll" onclick="goTo(seenBothBranches() ? 'screen-scenario-c' : 'screen-branch-return')">
+        <img src="assets/images/a2-scene4b-week-short.png" alt="A cozy week together" class="screen-image">
+      </div>
+      <button class="back-btn" onclick="event.stopPropagation(); goTo('screen-branch')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--coral)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+    </div>
+
+    <!-- Branch return: See the other path -->
+    <div class="screen scenario" id="screen-branch-return" data-screen="branch-return">
+      <div>
+        <div class="scenario-label">One more look</div>
+        <p>Would you like to see what the other ending looks like?</p>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 16px; align-items: center;">
+        <button class="btn btn-teal" onclick="goToOtherBranch()">See the other ending</button>
+        <button class="btn btn-yellow" onclick="goTo('screen-scenario-c')" style="font-size: 14px; padding: 12px 36px;">Skip to next section</button>
+      </div>
+    </div>
+
+    <!-- ==================== SCENARIO C ==================== -->
+    <div class="screen scenario" id="screen-scenario-c" data-screen="scenario-c">
+      <div>
+        <div class="scenario-label">Scenario</div>
+        <p>You've been part of Cozy Corners for about a week now. You just submitted another design.</p>
+        <br>
+        <p>See what happens.</p>
+      </div>
+      <button class="btn btn-teal" onclick="goTo('screen-c1')">Continue</button>
+    </div>
+
+    <!-- ==================== SECTION C: TOUCHPOINTS ==================== -->
+
+    <!-- C1: Voting as Studio member (+1 for Cozy Corners) -->
+    <div class="screen" id="screen-c1" data-screen="c1-voting-studio">
+      <div class="screen-scroll" onclick="goTo('screen-c2')">
+        <img src="assets/images/a3-scene1-voting-studio.png" alt="+1 for Cozy Corners" class="screen-image ripple-pulse">
+      </div>
+      <button class="back-btn" onclick="event.stopPropagation(); goBack()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--coral)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+    </div>
+
+    <!-- C2: Voting results with Studio layer -->
+    <div class="screen" id="screen-c2" data-screen="c2-results">
+      <div class="screen-scroll" onclick="goTo('screen-end')">
+        <img src="assets/images/a3-scene2-results.png" alt="Coffee Corner — Voting Results" class="screen-image">
+      </div>
+      <button class="back-btn" onclick="event.stopPropagation(); goBack()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--coral)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+    </div>
+
+    <!-- ==================== END SCREEN ==================== -->
+    <div class="screen end-screen" id="screen-end" data-screen="end">
+      <div>
+        <h2>Thank you</h2>
+        <p>Your feedback helps shape something real.</p>
+        <div class="end-logos">
+          <img src="assets/venue-logo.png" alt="Venue">
+          <div class="divider"></div>
+          <img src="assets/bobby-logo.svg" alt="Bobby Shaw">
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /phone-frame -->
+</div><!-- /app -->
+
+<!-- Admin gear: export tap log -->
+<button class="admin-gear" id="adminGear" title="Export tap log">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+  </svg>
+</button>
+
+<script>
+  // ========== PHONE SCALE (desktop) ==========
+  function updatePhoneScale() {
+    var frame = document.getElementById('phoneFrame');
+    if (!frame) return;
+    if (window.innerWidth <= 480) {
+      frame.style.transform = '';
+      return;
+    }
+    var vh = window.innerHeight;
+    var frameTotal = 812 + 60;
+    var scale = Math.min(1, (vh - 40) / frameTotal);
+    frame.style.transform = 'scale(' + scale + ')';
+    frame.style.transformOrigin = 'center center';
+  }
+  window.addEventListener('DOMContentLoaded', updatePhoneScale);
+  window.addEventListener('resize', updatePhoneScale);
+  // Also run immediately in case DOM already loaded
+  if (document.readyState !== 'loading') updatePhoneScale();
+
+  // ========== STATE ==========
+  let currentScreen = 'screen-landing';
+  let history = [];
+  let branchesSeen = new Set();
+  const tapLog = [];
+
+  // ========== SCROLL vs TAP detection ==========
+  // Prevent tap-to-advance when user is actually scrolling
+  var scrollStartY = 0;
+  var isScrolling = false;
+  document.addEventListener('mousedown', function(e) { scrollStartY = e.clientY; isScrolling = false; });
+  document.addEventListener('mousemove', function(e) {
+    if (Math.abs(e.clientY - scrollStartY) > 10) isScrolling = true;
+  });
+  document.addEventListener('touchstart', function(e) { scrollStartY = e.touches[0].clientY; isScrolling = false; });
+  document.addEventListener('touchmove', function(e) {
+    if (Math.abs(e.touches[0].clientY - scrollStartY) > 10) isScrolling = true;
+  });
+
+  // Wrap screen-scroll click handlers to ignore scroll gestures
+  document.querySelectorAll('.screen-scroll[onclick]').forEach(function(el) {
+    var originalOnclick = el.getAttribute('onclick');
+    el.removeAttribute('onclick');
+    el.addEventListener('click', function(e) {
+      if (isScrolling) { isScrolling = false; return; }
+      // Don't advance if clicking back button
+      if (e.target.closest('.back-btn')) return;
+      eval(originalOnclick);
+    });
+  });
+
+  // ========== NAVIGATION ==========
+  function goTo(screenId) {
+    const from = currentScreen;
+    const toEl = document.getElementById(screenId);
+    if (!toEl) return;
+
+    // Track branch visits
+    if (screenId === 'screen-b4-hit') branchesSeen.add('hit');
+    if (screenId === 'screen-b4-short') branchesSeen.add('short');
+
+    // Remove active from ALL screens (safety)
+    document.querySelectorAll('.screen.active').forEach(function(el) {
+      el.classList.remove('active');
+    });
+    toEl.classList.add('active');
+
+    // Reset scroll position
+    const scroll = toEl.querySelector('.screen-scroll');
+    if (scroll) scroll.scrollTop = 0;
+
+    history.push(from);
+    currentScreen = screenId;
+  }
+
+  function goBack() {
+    if (history.length === 0) return;
+    const prev = history.pop();
+    const toEl = document.getElementById(prev);
+    document.querySelectorAll('.screen.active').forEach(function(el) {
+      el.classList.remove('active');
+    });
+    if (toEl) toEl.classList.add('active');
+    currentScreen = prev;
+  }
+
+  function seenBothBranches() {
+    return branchesSeen.has('hit') && branchesSeen.has('short');
+  }
+
+  function goToOtherBranch() {
+    if (!branchesSeen.has('hit')) {
+      goTo('screen-b4-hit');
+    } else if (!branchesSeen.has('short')) {
+      goTo('screen-b4-short');
+    } else {
+      goTo('screen-scenario-c');
+    }
+  }
+
+  // ========== TAP LOGGING ==========
+  document.getElementById('phoneFrame').addEventListener('click', function(e) {
+    const screen = document.querySelector('.screen.active');
+    const screenName = screen ? screen.dataset.screen : 'unknown';
+
+    // Try to identify what was tapped
+    let element = 'background';
+    const target = e.target;
+    if (target.tagName === 'BUTTON') {
+      element = target.textContent.trim() || 'button';
+    } else if (target.closest('button')) {
+      element = target.closest('button').textContent.trim() || 'button';
+    } else if (target.tagName === 'IMG') {
+      element = target.alt || 'image';
+    } else if (target.classList.contains('tap-fullscreen')) {
+      element = 'screen-tap';
+    } else if (target.classList.contains('tap-zone')) {
+      element = target.dataset.label || 'zone';
+    }
+
+    tapLog.push({
+      timestamp: new Date().toISOString(),
+      screen: screenName,
+      element: element,
+      x: Math.round(e.clientX),
+      y: Math.round(e.clientY)
+    });
+  }, true);
+
+  // ========== EXPORT TAP LOG ==========
+  document.getElementById('adminGear').addEventListener('click', function() {
+    if (tapLog.length === 0) {
+      alert('No taps recorded yet.');
+      return;
+    }
+    const now = new Date();
+    const dateStr = now.toISOString().replace(/[:.]/g, '-').slice(0, 19);
+    const filename = 'taps-' + dateStr + '.json';
+    const blob = new Blob([JSON.stringify(tapLog, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+</script>
+
+</body>
+</html>
