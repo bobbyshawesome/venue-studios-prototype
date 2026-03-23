@@ -100,7 +100,7 @@
     }
 
     /* ===== SCREEN CHROME ===== */
-    /* Only the status bar is truly fixed. Currency bar scrolls with content. */
+    /* Status bar is fixed at top */
     .chrome-status {
       position: absolute;
       top: 0; left: 0; right: 0;
@@ -114,12 +114,24 @@
       display: block;
       object-fit: cover;
     }
-    /* Subtle gradient fade just below status bar so content scrolls under cleanly */
-    .chrome-status::after {
+    /* Currency bar is also fixed, just below the status bar */
+    .chrome-currency {
+      position: absolute;
+      top: 44px; left: 0; right: 0;
+      z-index: 99;
+      background: #FFE4D6;
+      pointer-events: none;
+    }
+    .chrome-currency img {
+      width: 100%; height: auto;
+      display: block;
+    }
+    /* Gradient fade below the combined fixed header (status + currency) so content flows under smoothly */
+    .chrome-currency::after {
       content: '';
       position: absolute;
-      bottom: -12px; left: 0; right: 0;
-      height: 12px;
+      bottom: -16px; left: 0; right: 0;
+      height: 16px;
       background: linear-gradient(to bottom, #FFE4D6, rgba(255,228,214,0));
       pointer-events: none;
     }
@@ -158,12 +170,10 @@
         #FFE4D6;
     }
 
-    /* --- Currency bar scrolls with content --- */
-    .a1-currency {
-      padding-top: 44px; /* clears fixed status bar */
-    }
-    .a1-currency img {
-      width: 100%; height: auto; display: block;
+    /* --- Content spacer clears the fixed header (status 44px + currency ~65px) --- */
+    .a1-body-spacer {
+      height: 109px; /* status bar + currency bar height */
+      flex-shrink: 0;
     }
 
     /* --- Room photo --- */
@@ -593,7 +603,7 @@
     .a1-join-overlay {
       position: absolute;
       inset: 0;
-      background: rgba(60, 40, 38, 0.72);
+      background: rgba(20, 12, 10, 0.82);
       z-index: 200;
       display: flex;
       align-items: center;
@@ -973,18 +983,19 @@
     <!-- ===== A1: VOTING CONFIRMATION — MULTI-STATE ===== -->
     <div class="screen" id="screen-a1" data-screen="a1-voting">
 
-      <!-- Fixed status bar only -->
+      <!-- Fixed header: status bar + currency bar -->
       <div class="chrome-status">
         <img class="status-img" src="assets/images/status-bar.png" alt="">
+      </div>
+      <div class="chrome-currency">
+        <img src="assets/images/currency-bar.png" alt="">
       </div>
 
       <!-- Scrollable body -->
       <div class="screen-body" id="a1-body">
 
-        <!-- Currency bar (scrolls with content) -->
-        <div class="a1-currency">
-          <img src="assets/images/currency-bar.png" alt="">
-        </div>
+        <!-- Spacer to clear fixed header -->
+        <div class="a1-body-spacer"></div>
 
         <!-- Room photo -->
         <div class="a1-room">
