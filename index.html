@@ -471,31 +471,25 @@
       object-position: center 30%;
       display: block;
     }
-    /* Edge-mounted chevron arrows — part of the card design per Figma */
-    .a1-card-arrow {
+    /* Arrow tap zones on image edges — visible chevrons matching Figma card component */
+    .a1-card-tap {
       position: absolute;
-      top: 50%; transform: translateY(-50%);
-      width: 25px; height: 39px;
-      background: rgba(255,255,255,0.55);
-      display: flex; align-items: center; justify-content: center;
+      top: 0; bottom: 0;
+      width: 25px;
       cursor: pointer;
-      border: none;
-      padding: 0;
-      z-index: 10;
       -webkit-tap-highlight-color: transparent;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,0.5);
     }
-    .a1-card-arrow.left {
-      left: 0;
-      border-radius: 0 6px 6px 0;
-    }
-    .a1-card-arrow.right {
-      right: 0;
-      border-radius: 6px 0 0 6px;
-    }
-    .a1-card-arrow svg {
+    .a1-card-tap.left { left: 0; border-radius: 0 6px 6px 0; }
+    .a1-card-tap.right { right: 0; border-radius: 6px 0 0 6px; }
+    .a1-card-tap svg {
       width: 7px; height: 12px;
       stroke: var(--brown);
-      stroke-width: 2;
+      stroke-width: 2.5;
       fill: none;
       stroke-linecap: round;
       stroke-linejoin: round;
@@ -1058,13 +1052,6 @@
 
         <!-- STATE 3: Browse studios card (hidden by default) -->
         <div class="a1-browse-card" id="a1-browse-card">
-          <!-- Dots above the cards -->
-          <div class="a1-carousel-dots" id="a1-carousel-dots">
-            <div class="cdot active" onclick="a1CarouselGo(0)"></div>
-            <div class="cdot" onclick="a1CarouselGo(1)"></div>
-            <div class="cdot" onclick="a1CarouselGo(2)"></div>
-          </div>
-
           <!-- Full-card sliding track -->
           <div class="a1-card-track" id="a1-card-track">
 
@@ -1072,8 +1059,13 @@
             <div class="a1-studio-card">
               <div class="a1-card-image">
                 <img src="assets/images/studio-preview-cozy.png" alt="Cozy Corners">
-                <button class="a1-card-arrow left" onclick="a1CarouselPrev()"><svg viewBox="0 0 7 12"><polyline points="6,1 1,6 6,11"/></svg></button>
-                <button class="a1-card-arrow right" onclick="a1CarouselNext()"><svg viewBox="0 0 7 12"><polyline points="1,1 6,6 1,11"/></svg></button>
+                <div class="a1-card-tap left" onclick="a1CarouselPrev()"><svg viewBox="0 0 7 12"><polyline points="6,1 1,6 6,11"/></svg></div>
+                <div class="a1-card-tap right" onclick="a1CarouselNext()"><svg viewBox="0 0 7 12"><polyline points="1,1 6,6 1,11"/></svg></div>
+              </div>
+              <div class="a1-carousel-dots">
+                <div class="cdot active" onclick="a1CarouselGo(0)"></div>
+                <div class="cdot" onclick="a1CarouselGo(1)"></div>
+                <div class="cdot" onclick="a1CarouselGo(2)"></div>
               </div>
               <div class="a1-browse-body">
                 <div class="a1-studio-name">Cozy Corners</div>
@@ -1100,8 +1092,13 @@
             <div class="a1-studio-card">
               <div class="a1-card-image">
                 <img src="assets/images/studio-preview-bonanza.png" alt="Beautiful Bonanza">
-                <button class="a1-card-arrow left" onclick="a1CarouselPrev()"><svg viewBox="0 0 7 12"><polyline points="6,1 1,6 6,11"/></svg></button>
-                <button class="a1-card-arrow right" onclick="a1CarouselNext()"><svg viewBox="0 0 7 12"><polyline points="1,1 6,6 1,11"/></svg></button>
+                <div class="a1-card-tap left" onclick="a1CarouselPrev()"><svg viewBox="0 0 7 12"><polyline points="6,1 1,6 6,11"/></svg></div>
+                <div class="a1-card-tap right" onclick="a1CarouselNext()"><svg viewBox="0 0 7 12"><polyline points="1,1 6,6 1,11"/></svg></div>
+              </div>
+              <div class="a1-carousel-dots">
+                <div class="cdot active" onclick="a1CarouselGo(0)"></div>
+                <div class="cdot" onclick="a1CarouselGo(1)"></div>
+                <div class="cdot" onclick="a1CarouselGo(2)"></div>
               </div>
               <div class="a1-browse-body">
                 <div class="a1-studio-name">Beautiful Bonanza</div>
@@ -1128,8 +1125,13 @@
             <div class="a1-studio-card">
               <div class="a1-card-image">
                 <img src="assets/images/studio-preview-sanctuary.png" alt="Sunset Sanctuary">
-                <button class="a1-card-arrow left" onclick="a1CarouselPrev()"><svg viewBox="0 0 7 12"><polyline points="6,1 1,6 6,11"/></svg></button>
-                <button class="a1-card-arrow right" onclick="a1CarouselNext()"><svg viewBox="0 0 7 12"><polyline points="1,1 6,6 1,11"/></svg></button>
+                <div class="a1-card-tap left" onclick="a1CarouselPrev()"><svg viewBox="0 0 7 12"><polyline points="6,1 1,6 6,11"/></svg></div>
+                <div class="a1-card-tap right" onclick="a1CarouselNext()"><svg viewBox="0 0 7 12"><polyline points="1,1 6,6 1,11"/></svg></div>
+              </div>
+              <div class="a1-carousel-dots">
+                <div class="cdot active" onclick="a1CarouselGo(0)"></div>
+                <div class="cdot" onclick="a1CarouselGo(1)"></div>
+                <div class="cdot" onclick="a1CarouselGo(2)"></div>
               </div>
               <div class="a1-browse-body">
                 <div class="a1-studio-name">Sunset Sanctuary</div>
@@ -1529,7 +1531,7 @@
 
   function a1CarouselUpdate(animate) {
     var track = document.getElementById('a1-card-track');
-    var dots = document.querySelectorAll('#a1-carousel-dots .cdot');
+    var dots = document.querySelectorAll('.a1-carousel-dots .cdot');
 
     if (animate === false) {
       track.style.transition = 'none';
