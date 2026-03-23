@@ -162,12 +162,13 @@
     .screen-body.has-tabs { bottom: 135px; }
 
     /* ===== A1 UNIFIED SCREEN ===== */
-    /* Matches Figma: warm peach base with white gradient overlay from 30-56% */
+    /* Warm peach at top transitioning to white below the room photo — no gradient bleed in content area */
     #screen-a1 {
-      background:
-        linear-gradient(180deg, rgba(255,255,255,0) 30%, rgba(255,255,255,1) 56%),
-        linear-gradient(208deg, rgba(255,228,214,0) 24%, rgba(255,228,214,1) 54%),
-        #FFE4D6;
+      background: #FFE4D6;
+    }
+    /* White background for everything below the room photo — kills any gradient bleed */
+    .a1-content-below {
+      background: white;
     }
 
     /* --- Content spacer clears the fixed header (status 44px + currency ~65px) --- */
@@ -274,7 +275,7 @@
       .btn-a1-explore-studio:hover { transform: scale(1.02); filter: brightness(1.06); }
       .a1-teaser:hover { opacity: 0.85; }
       .a1-teaser:hover .a1-teaser-text { color: var(--coral); }
-      .a1-carousel-arrow:hover { background: white; box-shadow: 0 2px 12px rgba(101,77,78,0.2); }
+      .a1-carousel-arrow:hover { background: rgba(255,255,255,0.8); }
       .btn-begin:hover { transform: scale(1.03); filter: brightness(1.06); }
       .btn-yellow-pill:hover { transform: scale(1.03); filter: brightness(1.06); }
     }
@@ -422,14 +423,15 @@
 
     /* ===== STATE 3: BROWSE CARD ===== */
     .a1-browse-card {
-      margin: 4px 16px 30px;
+      margin: 4px 8px 30px;
       background: white;
       border-radius: 16px;
       border: 1px solid rgba(230,225,220,0.5);
       overflow: hidden;
       display: none;
       opacity: 0;
-      box-shadow: 0 4px 16px rgba(239, 145, 128, 0.12);
+      box-shadow: 0 0 24px rgba(239,167,154,0.21);
+      padding: 8px 8px 16px;
     }
     .a1-browse-card.visible {
       display: block;
@@ -446,7 +448,7 @@
       width: 100%;
       height: 180px;
       overflow: hidden;
-      border-radius: 16px 16px 0 0;
+      border-radius: 16px;
       margin: 0;
     }
     .a1-carousel-track {
@@ -467,24 +469,36 @@
     }
     /* All slides use real images from Figma — no tinting needed */
 
-    /* Carousel arrows */
+    /* Carousel arrows — subtle edge chevrons matching Figma component */
     .a1-carousel-arrow {
       position: absolute;
       top: 50%; transform: translateY(-50%);
-      width: 32px; height: 32px;
-      background: rgba(255,255,255,0.85);
-      border-radius: 50%;
+      width: 25px; height: 39px;
+      background: rgba(255,255,255,0.55);
       display: flex; align-items: center; justify-content: center;
       cursor: pointer;
       border: none;
-      box-shadow: 0 2px 8px rgba(101,77,78,0.15);
-      transition: transform 80ms ease;
+      padding: 0;
       z-index: 10;
+      transition: background 150ms ease;
     }
-    .a1-carousel-arrow:active { transform: translateY(-50%) scale(0.92); }
-    .a1-carousel-arrow.left { left: 10px; }
-    .a1-carousel-arrow.right { right: 10px; }
-    .a1-carousel-arrow img { width: 16px; height: 16px; }
+    .a1-carousel-arrow:active { background: rgba(255,255,255,0.8); }
+    .a1-carousel-arrow.left {
+      left: 0;
+      border-radius: 0 6px 6px 0;
+    }
+    .a1-carousel-arrow.right {
+      right: 0;
+      border-radius: 6px 0 0 6px;
+    }
+    .a1-carousel-arrow svg {
+      width: 7px; height: 12px;
+      stroke: var(--brown);
+      stroke-width: 2;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
 
     /* Carousel dots */
     .a1-carousel-dots {
@@ -495,8 +509,8 @@
     }
     .a1-carousel-dots .cdot {
       border-radius: 50%;
-      background: #ddd;
-      transition: background 200ms, width 200ms;
+      background: var(--warm-track);
+      transition: background 200ms, width 200ms, height 200ms;
       width: 6px; height: 6px;
     }
     .a1-carousel-dots .cdot.active {
@@ -521,51 +535,40 @@
       margin-bottom: 12px;
     }
 
-    /* Progress bar with ellipse milestone dots */
+    /* Progress bar — matches Figma Studios/Progress Ripple */
     .a1-progress-wrap {
-      position: relative;
-      margin: 0 12px 14px;
-      height: 16px;
+      background: #FCF9F6;
+      border-radius: 12px;
+      padding: 8px 12px;
+      margin: 0 8px 8px;
     }
     .a1-progress-track {
-      position: absolute;
-      top: 50%; left: 6px; right: 6px;
-      transform: translateY(-50%);
-      height: 10px;
+      position: relative;
+      height: 12px;
       background: var(--warm-track);
-      border-radius: 5px;
+      border-radius: 6px;
       overflow: hidden;
     }
     .a1-progress-fill {
       height: 100%;
-      border-radius: 5px;
-      background: linear-gradient(90deg, var(--green), var(--aqua));
+      border-radius: 6px;
+      background: linear-gradient(90deg, #78C0C8, rgba(120,192,200,0.6));
       transition: width 400ms ease;
     }
-    .a1-progress-dots {
+    /* Milestone notch dots on the track */
+    .a1-progress-notch {
       position: absolute;
-      top: 50%; left: 0; right: 0;
-      transform: translateY(-50%);
-      display: flex;
-      justify-content: space-between;
-      pointer-events: none;
+      top: 2px;
+      width: 8px; height: 8px;
+      border-radius: 50%;
       z-index: 2;
     }
-    .a1-progress-dots .pdot {
-      width: 14px; height: 14px;
-      border-radius: 50%;
+    .a1-progress-notch.reached {
       background: white;
-      border: 2.5px solid var(--warm-track);
-      flex-shrink: 0;
-      box-shadow: 0 1px 3px rgba(101,77,78,0.1);
+      opacity: 0.7;
     }
-    .a1-progress-dots .pdot.reached {
-      border-color: var(--aqua);
-      background: white;
-    }
-    .a1-progress-dots .pdot.filled {
-      background: var(--aqua);
-      border-color: var(--aqua);
+    .a1-progress-notch.unreached {
+      background: rgba(255,255,255,0.4);
     }
 
     /* Gallery */
@@ -581,21 +584,23 @@
       object-fit: cover;
     }
 
-    /* Join button — full width, generous height */
+    /* Join button — matches Figma Venue/Button component */
     .btn-a1-join {
       display: block;
       width: 100%;
-      height: 46px;
-      background: linear-gradient(168deg, #FFC226, #F59E4D);
-      box-shadow: inset 0 -2px 6px rgba(0,0,0,0.08), 0 4px 14px rgba(255,194,38,0.3);
+      height: 40px;
+      margin: 0 8px;
+      background: linear-gradient(173deg, #FFC226 20%, #F59E4D 99%);
+      box-shadow: 0 1.5px 2px rgba(242,160,59,0.3), 0 1.5px 2px rgba(101,77,78,0.1);
       border: none;
       border-radius: 31.5px;
       font-family: 'Poppins', sans-serif;
-      font-size: 16px;
+      font-size: 12px;
       font-weight: 700;
       color: white;
       cursor: pointer;
       transition: transform 100ms ease;
+      position: relative;
     }
     .btn-a1-join:active { transform: scale(0.97); }
 
@@ -1002,6 +1007,9 @@
           <img src="assets/images/room-dining.png" alt="Your dining room design">
         </div>
 
+        <!-- White background below the room photo — no gradient bleed -->
+        <div class="a1-content-below">
+
         <!-- Result section (always visible) -->
         <div class="a1-result">
           <h2>Design Sent To Voting!</h2>
@@ -1073,13 +1081,13 @@
                 <img src="assets/images/gallery-1.png" alt="Sunset Sanctuary">
               </div>
             </div>
-            <!-- Left arrow -->
+            <!-- Left chevron — edge-mounted, matches Figma -->
             <button class="a1-carousel-arrow left" id="a1-arrow-left" onclick="a1CarouselPrev()">
-              <img src="assets/images/carousel-left.svg" alt="Previous">
+              <svg viewBox="0 0 7 12"><polyline points="6,1 1,6 6,11"/></svg>
             </button>
-            <!-- Right arrow -->
+            <!-- Right chevron — edge-mounted, matches Figma -->
             <button class="a1-carousel-arrow right" id="a1-arrow-right" onclick="a1CarouselNext()">
-              <img src="assets/images/carousel-right.svg" alt="Next">
+              <svg viewBox="0 0 7 12"><polyline points="1,1 6,6 1,11"/></svg>
             </button>
           </div>
 
@@ -1095,16 +1103,15 @@
             <div class="a1-studio-name" id="a1-studio-name">Cozy Corners</div>
             <div class="a1-studio-meta" id="a1-studio-meta">8 of 15 designers · 12 milestones hit this week!</div>
 
-            <!-- Progress bar with ellipse milestone dots -->
+            <!-- Progress bar — Figma Studios/Progress Ripple -->
             <div class="a1-progress-wrap">
               <div class="a1-progress-track">
                 <div class="a1-progress-fill" id="a1-progress-fill" style="width: 53%;"></div>
-                <div class="a1-progress-dots">
-                  <div class="pdot filled"></div>
-                  <div class="pdot reached"></div>
-                  <div class="pdot"></div>
-                  <div class="pdot"></div>
-                </div>
+                <!-- Milestone notches at 25%, 50%, 75%, 100% positions -->
+                <div class="a1-progress-notch reached" style="left: 22%;"></div>
+                <div class="a1-progress-notch reached" style="left: 46%;"></div>
+                <div class="a1-progress-notch unreached" style="left: 70%;"></div>
+                <div class="a1-progress-notch unreached" style="left: 90%;"></div>
               </div>
             </div>
 
@@ -1123,6 +1130,7 @@
         <!-- Spacer for scroll -->
         <div style="height: 16px;"></div>
 
+        </div><!-- /a1-content-below -->
       </div><!-- /screen-body -->
 
       <!-- STATE 4: Join confirmation overlay -->
