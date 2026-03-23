@@ -936,7 +936,8 @@
     }
     .chapters-body {
       position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
+      top: 0; left: 0; right: 0;
+      bottom: 127px; /* nav 75px + tab 52px */
       overflow-y: auto;
       overflow-x: hidden;
       -webkit-overflow-scrolling: touch;
@@ -949,18 +950,21 @@
     }
     .chapters-offers {
       width: 100%;
+      height: 85px;
       overflow-x: auto;
+      overflow-y: hidden;
       -webkit-overflow-scrolling: touch;
     }
     .chapters-offers::-webkit-scrollbar { display: none; }
     .chapters-offers { scrollbar-width: none; }
     .chapters-offers img {
-      height: auto;
+      height: 85px;
+      width: auto;
       display: block;
     }
     .chapters-content {
-      /* Clip the bottom of the image to hide the baked-in tab bar and nav */
-      max-height: 460px;
+      /* Clip the bottom to hide baked-in tab bar and nav from the image */
+      max-height: 440px;
       overflow: hidden;
     }
     .chapters-content img {
@@ -969,59 +973,40 @@
       display: block;
     }
 
-    /* ===== TAB BAR ===== */
-    .tab-bar {
+    /* ===== FIGMA-EXPORTED TAB BAR & NAV ===== */
+    .chrome-nav-figma {
       position: absolute;
-      bottom: 86px;
-      left: 20px;
-      right: 20px;
+      bottom: 0; left: 0; right: 0;
+      z-index: 100;
+    }
+    .chrome-nav-figma img {
+      width: 100%; height: auto;
+      display: block;
+    }
+    .chrome-tab-figma {
+      position: absolute;
+      bottom: 75px;
+      left: 0; right: 0;
       z-index: 90;
-      background: white;
-      border-radius: 320px;
-      padding: 4px;
-      display: flex;
-      box-shadow: 0px 0px 16px rgba(239,167,154,0.5);
+      pointer-events: none;
     }
-    .tab-bar-segment {
-      flex: 1;
-      height: 36px;
-      border-radius: 36px;
-      border: none;
-      background: transparent;
-      font-family: 'Poppins', sans-serif;
-      font-size: 13px;
-      font-weight: 500;
-      color: #654D4E;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      position: relative;
-      transition: background 200ms, color 200ms;
+    .chrome-tab-figma img {
+      width: 100%; height: auto;
+      display: block;
     }
-    .tab-bar-segment.active {
-      background: #EFA79A;
-      color: white;
-    }
-    .tab-new-badge {
+    /* Invisible tap zones over tab segments */
+    .tab-tap-zone {
       position: absolute;
-      top: -6px;
-      right: 2px;
-      background: var(--aqua);
-      color: white;
-      font-size: 8px;
-      font-weight: 700;
-      padding: 2px 5px;
-      border-radius: 8px;
-      line-height: 1;
-      letter-spacing: 0.5px;
+      top: 0; bottom: 0;
+      width: 33.33%;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      pointer-events: auto;
+      -webkit-tap-highlight-color: transparent;
     }
-    @media (hover: hover) {
-      .tab-bar-segment:not(.active):hover {
-        background: rgba(239,167,154,0.12);
-      }
-    }
+    .tab-tap-left { left: 0; }
+    .tab-tap-right { right: 0; }
 
     /* ===== STUDIOS OVERLAY ===== */
     #screen-studios-overlay {
@@ -1030,6 +1015,12 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      z-index: 50;
+      /* No fade transition — instant appearance to prevent bleed */
+      transition: none;
+    }
+    #screen-studios-overlay.active {
+      transition: none;
     }
     .overlay-popup-wrap {
       position: relative;
@@ -1082,7 +1073,8 @@
     }
     .browse-studios-body {
       position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
+      top: 0; left: 0; right: 0;
+      bottom: 127px; /* nav 75px + tab 52px */
       overflow-y: auto;
       overflow-x: hidden;
       -webkit-overflow-scrolling: touch;
@@ -1401,31 +1393,28 @@
       <!-- Fixed chrome -->
       <div class="chrome-status"><img class="status-img" src="assets/images/status-bar.png" alt=""></div>
       <div class="chrome-currency"><img src="assets/images/currency-bar.png" alt=""></div>
-      <div class="chrome-nav"><img src="assets/images/bottom-nav.png" alt=""></div>
+
+      <!-- Fixed nav (Figma export) -->
+      <div class="chrome-nav-figma"><img src="assets/images/nav-chapters.png" alt=""></div>
+
+      <!-- Fixed tab bar (Figma export with tap zone) -->
+      <div class="chrome-tab-figma">
+        <img src="assets/images/tab-chapters.png" alt="">
+        <button class="tab-tap-zone tab-tap-right" onclick="navigate('screen-studios-overlay')"></button>
+      </div>
 
       <!-- Scrollable content -->
-      <div class="chapters-body" id="chapters-body" style="bottom: 75px;">
+      <div class="chapters-body" id="chapters-body">
         <div class="chapters-spacer"></div>
-        <!-- Offers row (horizontal scroll) -->
+        <!-- Offers row (horizontal scroll, 85px height at 1x) -->
         <div class="chapters-offers">
-          <img src="assets/images/offers-row.png" alt="Offers" style="width: 600px;">
+          <img src="assets/images/offers-row.png" alt="Offers">
         </div>
-        <!-- Chapter content -->
+        <!-- Chapter content (clipped to hide baked-in tab/nav) -->
         <div class="chapters-content">
           <img src="assets/images/chapter-content.png" alt="Chapter content">
         </div>
-        <!-- Bottom spacer for tab bar clearance -->
-        <div style="height: 70px;"></div>
-      </div>
-
-      <!-- Tab bar -->
-      <div class="tab-bar" id="chapters-tab-bar">
-        <button class="tab-bar-segment active">Chapters</button>
-        <button class="tab-bar-segment">Live Events</button>
-        <button class="tab-bar-segment" onclick="navigate('screen-studios-overlay')">
-          Studios
-          <span class="tab-new-badge">NEW</span>
-        </button>
+        <div style="height: 60px;"></div>
       </div>
     </div>
 
@@ -1445,10 +1434,18 @@
       <!-- Fixed chrome -->
       <div class="chrome-status"><img class="status-img" src="assets/images/status-bar.png" alt=""></div>
       <div class="chrome-currency"><img src="assets/images/currency-bar.png" alt=""></div>
-      <div class="chrome-nav"><img src="assets/images/bottom-nav.png" alt=""></div>
+
+      <!-- Fixed nav (Figma export - browse version) -->
+      <div class="chrome-nav-figma"><img src="assets/images/nav-browse.png" alt=""></div>
+
+      <!-- Fixed tab bar (Figma export with tap zone) -->
+      <div class="chrome-tab-figma">
+        <img src="assets/images/tab-studios.png" alt="">
+        <button class="tab-tap-zone tab-tap-left" onclick="navigate('screen-chapters')"></button>
+      </div>
 
       <!-- Scrollable content -->
-      <div class="browse-studios-body" id="bs-body" style="bottom: 75px;">
+      <div class="browse-studios-body" id="bs-body">
         <div class="chapters-spacer"></div>
 
         <!-- Discovery card -->
@@ -1570,16 +1567,6 @@
 
         <!-- Bottom spacer for tab bar clearance -->
         <div style="height: 70px;"></div>
-      </div>
-
-      <!-- Tab bar -->
-      <div class="tab-bar" id="bs-tab-bar">
-        <button class="tab-bar-segment" onclick="navigate('screen-chapters')">Chapters</button>
-        <button class="tab-bar-segment">Live Events</button>
-        <button class="tab-bar-segment active">
-          Studios
-          <span class="tab-new-badge">NEW</span>
-        </button>
       </div>
 
       <!-- Join overlay for browse studios -->
