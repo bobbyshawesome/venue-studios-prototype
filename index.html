@@ -937,7 +937,7 @@
     .chapters-body {
       position: absolute;
       top: 0; left: 0; right: 0;
-      bottom: 127px; /* nav 75px + tab 52px */
+      bottom: 120px; /* nav + tab area */
       overflow-y: auto;
       overflow-x: hidden;
       -webkit-overflow-scrolling: touch;
@@ -964,7 +964,7 @@
     }
     .chapters-content {
       /* Clip the bottom to hide baked-in tab bar and nav from the image */
-      max-height: 440px;
+      max-height: 480px;
       overflow: hidden;
     }
     .chapters-content img {
@@ -978,6 +978,8 @@
       position: absolute;
       bottom: 0; left: 0; right: 0;
       z-index: 100;
+      overflow: hidden;
+      border-radius: 30px;
     }
     .chrome-nav-figma img {
       width: 100%; height: auto;
@@ -985,7 +987,7 @@
     }
     .chrome-tab-figma {
       position: absolute;
-      bottom: 75px;
+      bottom: 68px;
       left: 0; right: 0;
       z-index: 90;
       pointer-events: none;
@@ -994,10 +996,11 @@
       width: 100%; height: auto;
       display: block;
     }
-    /* Invisible tap zones over tab segments */
+    /* Invisible tap zones over tab segments — constrained to the pill area */
     .tab-tap-zone {
       position: absolute;
-      top: 0; bottom: 0;
+      top: 18%;  /* skip shadow glow at top */
+      bottom: 18%; /* skip shadow glow at bottom */
       width: 33.33%;
       background: transparent;
       border: none;
@@ -1074,7 +1077,7 @@
     .browse-studios-body {
       position: absolute;
       top: 0; left: 0; right: 0;
-      bottom: 127px; /* nav 75px + tab 52px */
+      bottom: 120px; /* nav + tab area */
       overflow-y: auto;
       overflow-x: hidden;
       -webkit-overflow-scrolling: touch;
@@ -1394,8 +1397,8 @@
       <div class="chrome-status"><img class="status-img" src="assets/images/status-bar.png" alt=""></div>
       <div class="chrome-currency"><img src="assets/images/currency-bar.png" alt=""></div>
 
-      <!-- Fixed nav (Figma export) -->
-      <div class="chrome-nav-figma"><img src="assets/images/nav-chapters.png" alt=""></div>
+      <!-- Fixed nav (Figma export - browse version per Bobby) -->
+      <div class="chrome-nav-figma"><img src="assets/images/nav-browse.png" alt=""></div>
 
       <!-- Fixed tab bar (Figma export with tap zone) -->
       <div class="chrome-tab-figma">
