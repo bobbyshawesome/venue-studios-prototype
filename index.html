@@ -958,6 +958,11 @@
       height: auto;
       display: block;
     }
+    .chapters-content {
+      /* Clip the bottom of the image to hide the baked-in tab bar and nav */
+      max-height: 460px;
+      overflow: hidden;
+    }
     .chapters-content img {
       width: 100%;
       height: auto;
@@ -1020,71 +1025,55 @@
 
     /* ===== STUDIOS OVERLAY ===== */
     #screen-studios-overlay {
-      background: rgba(101, 77, 78, 0.85);
+      background: rgb(101, 77, 78);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
     }
     .overlay-popup-wrap {
+      position: relative;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 20px 16px;
       width: 100%;
-      max-height: 100%;
-      overflow-y: auto;
+      height: 100%;
     }
     .overlay-popup-wrap img.overlay-popup-img {
       width: 100%;
-      max-width: 343px;
+      max-width: 375px;
       height: auto;
       display: block;
-      border-radius: 24px;
     }
-    .overlay-buttons {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 16px;
-      margin-top: 24px;
-      width: 100%;
-      max-width: 343px;
-    }
-    .btn-overlay-find {
+    /* Invisible tap zones positioned over the baked-in buttons in the popup image */
+    .overlay-tap-zones {
+      position: absolute;
+      bottom: 4%;
+      left: 0; right: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 100%;
+      gap: 0;
+      padding: 0 16px;
+    }
+    .overlay-tap-find {
+      width: 50%;
       height: 48px;
-      border-radius: var(--radius-btn);
+      background: transparent;
       border: none;
-      font-family: 'Poppins', sans-serif;
-      font-size: 16px;
-      font-weight: 600;
-      color: white;
       cursor: pointer;
-      background: linear-gradient(135deg, var(--yellow), var(--orange));
-      box-shadow: 0 4px 16px rgba(255, 194, 38, 0.35);
-      transition: transform 100ms ease;
     }
-    .btn-overlay-find:active { transform: scale(0.96); }
-    @media (hover: hover) {
-      .btn-overlay-find:hover { transform: scale(1.03); filter: brightness(1.06); }
-    }
-    .btn-overlay-later {
-      background: none;
+    .overlay-tap-later {
+      width: 50%;
+      height: 48px;
+      background: transparent;
       border: none;
-      font-family: 'Poppins', sans-serif;
-      font-size: 15px;
-      font-weight: 500;
-      color: var(--coral);
       cursor: pointer;
-      padding: 4px 8px;
     }
     @media (hover: hover) {
-      .btn-overlay-later:hover { color: var(--coral-dark); }
+      .overlay-tap-find:hover { background: rgba(255,255,255,0.08); border-radius: 24px; }
+      .overlay-tap-later:hover { background: rgba(255,255,255,0.08); border-radius: 24px; }
     }
 
     /* ===== BROWSE STUDIOS SCREEN ===== */
@@ -1444,9 +1433,9 @@
     <div class="screen" id="screen-studios-overlay" data-screen="studios-overlay">
       <div class="overlay-popup-wrap">
         <img class="overlay-popup-img" src="assets/images/studios-overlay-popup.png" alt="Design Studios">
-        <div class="overlay-buttons">
-          <button class="btn-overlay-find" onclick="navigate('screen-browse-studios')">Find a Studio</button>
-          <button class="btn-overlay-later" onclick="navigate('screen-chapters')">Maybe later</button>
+        <div class="overlay-tap-zones">
+          <button class="overlay-tap-find" onclick="navigate('screen-browse-studios')"></button>
+          <button class="overlay-tap-later" onclick="navigate('screen-chapters')"></button>
         </div>
       </div>
     </div>
