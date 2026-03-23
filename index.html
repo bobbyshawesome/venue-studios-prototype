@@ -471,29 +471,17 @@
       object-position: center 30%;
       display: block;
     }
-    /* Arrow tap zones on image edges — visible chevrons matching Figma card component */
+    /* Invisible tap zones only — NO visual arrows */
     .a1-card-tap {
       position: absolute;
       top: 0; bottom: 0;
-      width: 25px;
+      width: 50%;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
       z-index: 10;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(255,255,255,0.5);
     }
-    .a1-card-tap.left { left: 0; border-radius: 0 6px 6px 0; }
-    .a1-card-tap.right { right: 0; border-radius: 6px 0 0 6px; }
-    .a1-card-tap svg {
-      width: 7px; height: 12px;
-      stroke: var(--brown);
-      stroke-width: 2.5;
-      fill: none;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
+    .a1-card-tap.left { left: 0; }
+    .a1-card-tap.right { right: 0; }
 
     /* Carousel dots */
     .a1-carousel-dots {
@@ -1059,8 +1047,8 @@
             <div class="a1-studio-card">
               <div class="a1-card-image">
                 <img src="assets/images/studio-preview-cozy.png" alt="Cozy Corners">
-                <div class="a1-card-tap left" onclick="a1CarouselPrev()"><svg viewBox="0 0 7 12"><polyline points="6,1 1,6 6,11"/></svg></div>
-                <div class="a1-card-tap right" onclick="a1CarouselNext()"><svg viewBox="0 0 7 12"><polyline points="1,1 6,6 1,11"/></svg></div>
+                <div class="a1-card-tap left" onclick="a1CarouselPrev()"></div>
+                <div class="a1-card-tap right" onclick="a1CarouselNext()"></div>
               </div>
               <div class="a1-carousel-dots">
                 <div class="cdot active" onclick="a1CarouselGo(0)"></div>
@@ -1092,8 +1080,8 @@
             <div class="a1-studio-card">
               <div class="a1-card-image">
                 <img src="assets/images/studio-preview-bonanza.png" alt="Beautiful Bonanza">
-                <div class="a1-card-tap left" onclick="a1CarouselPrev()"><svg viewBox="0 0 7 12"><polyline points="6,1 1,6 6,11"/></svg></div>
-                <div class="a1-card-tap right" onclick="a1CarouselNext()"><svg viewBox="0 0 7 12"><polyline points="1,1 6,6 1,11"/></svg></div>
+                <div class="a1-card-tap left" onclick="a1CarouselPrev()"></div>
+                <div class="a1-card-tap right" onclick="a1CarouselNext()"></div>
               </div>
               <div class="a1-carousel-dots">
                 <div class="cdot active" onclick="a1CarouselGo(0)"></div>
@@ -1125,8 +1113,8 @@
             <div class="a1-studio-card">
               <div class="a1-card-image">
                 <img src="assets/images/studio-preview-sanctuary.png" alt="Sunset Sanctuary">
-                <div class="a1-card-tap left" onclick="a1CarouselPrev()"><svg viewBox="0 0 7 12"><polyline points="6,1 1,6 6,11"/></svg></div>
-                <div class="a1-card-tap right" onclick="a1CarouselNext()"><svg viewBox="0 0 7 12"><polyline points="1,1 6,6 1,11"/></svg></div>
+                <div class="a1-card-tap left" onclick="a1CarouselPrev()"></div>
+                <div class="a1-card-tap right" onclick="a1CarouselNext()"></div>
               </div>
               <div class="a1-carousel-dots">
                 <div class="cdot active" onclick="a1CarouselGo(0)"></div>
@@ -1542,9 +1530,9 @@
     // Slide the full-card track — each card is 100% width
     track.style.transform = 'translateX(-' + (a1CarouselIndex * 100) + '%)';
 
-    // Update dots
+    // Update dots — 3 sets of 3 (one per card), all must reflect current position
     dots.forEach(function(dot, i) {
-      dot.classList.toggle('active', i === a1CarouselIndex);
+      dot.classList.toggle('active', (i % a1Studios.length) === a1CarouselIndex);
     });
   }
 
