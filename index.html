@@ -106,7 +106,7 @@
       top: 0; left: 0; right: 0;
       z-index: 100;
       height: 44px;
-      background: var(--peach-bg);
+      background: #FFE4D6;
       pointer-events: none;
     }
     .chrome-status img.status-img {
@@ -120,7 +120,7 @@
       position: absolute;
       bottom: -12px; left: 0; right: 0;
       height: 12px;
-      background: linear-gradient(to bottom, var(--peach-bg), rgba(254,222,207,0));
+      background: linear-gradient(to bottom, #FFE4D6, rgba(255,228,214,0));
       pointer-events: none;
     }
 
@@ -150,10 +150,13 @@
     .screen-body.has-tabs { bottom: 135px; }
 
     /* ===== A1 UNIFIED SCREEN ===== */
+    /* Matches Figma: warm peach base with white gradient overlay from 30-56% */
     #screen-a1 {
-      background: var(--peach-bg);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0) 30%, rgba(255,255,255,1) 56%),
+        linear-gradient(208deg, rgba(255,228,214,0) 24%, rgba(255,228,214,1) 54%),
+        #FFE4D6;
     }
-    /* No gradient on the body — peach bg stays consistent throughout */
 
     /* --- Currency bar scrolls with content --- */
     .a1-currency {
@@ -644,13 +647,13 @@
       margin-bottom: 20px;
     }
     .a1-join-dialog-avatars img {
-      width: 22px; height: 22px;
+      width: 28px; height: 28px;
       border-radius: 50%;
       border: 2px solid white;
       object-fit: cover;
     }
     .a1-join-dialog-avatars img:not(:first-child) {
-      margin-left: -5px;
+      margin-left: -8px;
     }
     /* Extra faded avatars for dialog (reuse same 3 twice) */
     .a1-join-dialog-avatars img:nth-child(4),
