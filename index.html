@@ -421,17 +421,14 @@
       padding: 0;
     }
 
-    /* ===== STATE 3: BROWSE CARD ===== */
+    /* ===== STATE 3: BROWSE CAROUSEL ===== */
+    /* Outer container — clips the sliding cards */
     .a1-browse-card {
       margin: 4px 8px 30px;
-      background: white;
-      border-radius: 16px;
-      border: 1px solid rgba(230,225,220,0.5);
       overflow: hidden;
       display: none;
       opacity: 0;
-      box-shadow: 0 0 24px rgba(239,167,154,0.21);
-      padding: 8px 8px 16px;
+      position: relative;
     }
     .a1-browse-card.visible {
       display: block;
@@ -442,8 +439,25 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* Studio carousel image area */
-    .a1-carousel {
+    /* Track holds all cards side by side — slides as a unit */
+    .a1-card-track {
+      display: flex;
+      transition: transform 320ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Individual studio card */
+    .a1-studio-card {
+      flex: 0 0 100%;
+      background: white;
+      border-radius: 16px;
+      border: 1px solid rgba(230,225,220,0.5);
+      box-shadow: 0 0 24px rgba(239,167,154,0.21);
+      padding: 8px 8px 16px;
+      overflow: hidden;
+    }
+
+    /* Image area with edge arrows */
+    .a1-card-image {
       position: relative;
       width: 100%;
       height: 180px;
@@ -451,37 +465,41 @@
       border-radius: 16px;
       margin: 0;
     }
-    .a1-carousel-track {
-      display: flex;
-      width: 300%;
-      height: 100%;
-      transition: transform 320ms cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .a1-carousel-slide {
-      width: calc(100% / 3);
-      height: 100%;
-      flex-shrink: 0;
-    }
-    .a1-carousel-slide img {
+    .a1-card-image img {
       width: 100%; height: 100%;
       object-fit: cover;
       object-position: center 30%;
       display: block;
     }
-    /* All slides use real images from Figma — no tinting needed */
-
-    /* Carousel tap zones — left/right halves of the image area */
-    .a1-carousel-zone {
+    /* Edge-mounted chevron arrows — part of the card design per Figma */
+    .a1-card-arrow {
       position: absolute;
-      top: 0; bottom: 0;
-      width: 50%;
-      z-index: 10;
+      top: 50%; transform: translateY(-50%);
+      width: 25px; height: 39px;
+      background: rgba(255,255,255,0.55);
+      display: flex; align-items: center; justify-content: center;
       cursor: pointer;
+      border: none;
+      padding: 0;
+      z-index: 10;
       -webkit-tap-highlight-color: transparent;
     }
-    .a1-carousel-zone.left { left: 0; }
-    .a1-carousel-zone.right { right: 0; }
-    /* No overlay chevrons — tap zones handle interaction, dots show position */
+    .a1-card-arrow.left {
+      left: 0;
+      border-radius: 0 6px 6px 0;
+    }
+    .a1-card-arrow.right {
+      right: 0;
+      border-radius: 6px 0 0 6px;
+    }
+    .a1-card-arrow svg {
+      width: 7px; height: 12px;
+      stroke: var(--brown);
+      stroke-width: 2;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
 
     /* Carousel dots */
     .a1-carousel-dots {
@@ -495,13 +513,14 @@
       background: var(--warm-track);
       transition: background 200ms, width 200ms, height 200ms;
       width: 6px; height: 6px;
+      cursor: pointer;
     }
     .a1-carousel-dots .cdot.active {
       background: var(--aqua);
       width: 8px; height: 8px;
     }
 
-    /* Studio body — tighter padding matching Figma */
+    /* Studio body */
     .a1-browse-body {
       padding: 4px 16px 16px;
     }
@@ -523,7 +542,7 @@
       background: #FCF9F6;
       border-radius: 12px;
       padding: 8px 12px;
-      margin: 0 8px 8px;
+      margin: 0 0 8px;
     }
     .a1-progress-track {
       position: relative;
@@ -536,9 +555,7 @@
       height: 100%;
       border-radius: 6px;
       background: linear-gradient(90deg, #78C0C8, rgba(120,192,200,0.6));
-      transition: width 400ms ease;
     }
-    /* Milestone notch dots on the track */
     .a1-progress-notch {
       position: absolute;
       top: 2px;
@@ -546,13 +563,8 @@
       border-radius: 50%;
       z-index: 2;
     }
-    .a1-progress-notch.reached {
-      background: white;
-      opacity: 0.7;
-    }
-    .a1-progress-notch.unreached {
-      background: rgba(255,255,255,0.4);
-    }
+    .a1-progress-notch.reached { background: white; opacity: 0.7; }
+    .a1-progress-notch.unreached { background: rgba(255,255,255,0.4); }
 
     /* Gallery */
     .a1-gallery {
@@ -567,12 +579,11 @@
       object-fit: cover;
     }
 
-    /* Join button — matches Figma Venue/Button component */
+    /* Join button — matches Figma Venue/Button component, centered with content */
     .btn-a1-join {
       display: block;
       width: 100%;
       height: 40px;
-      margin: 0 8px;
       background: linear-gradient(173deg, #FFC226 20%, #F59E4D 99%);
       box-shadow: 0 1.5px 2px rgba(242,160,59,0.3), 0 1.5px 2px rgba(101,77,78,0.1);
       border: none;
@@ -1047,63 +1058,101 @@
 
         <!-- STATE 3: Browse studios card (hidden by default) -->
         <div class="a1-browse-card" id="a1-browse-card">
-
-          <!-- Carousel image -->
-          <div class="a1-carousel">
-            <div class="a1-carousel-track" id="a1-carousel-track">
-              <!-- Slide 1: Cozy Corners -->
-              <div class="a1-carousel-slide">
-                <img src="assets/images/studio-preview-cozy.png" alt="Cozy Corners">
-              </div>
-              <!-- Slide 2: Beautiful Bonanza -->
-              <div class="a1-carousel-slide">
-                <img src="assets/images/studio-preview-bonanza.png" alt="Beautiful Bonanza">
-              </div>
-              <!-- Slide 3: Sunset Sanctuary -->
-              <div class="a1-carousel-slide">
-                <img src="assets/images/studio-preview-sanctuary.png" alt="Sunset Sanctuary">
-              </div>
-            </div>
-            <!-- Tap zones: left half = prev, right half = next -->
-            <div class="a1-carousel-zone left" onclick="a1CarouselPrev()"></div>
-            <div class="a1-carousel-zone right" onclick="a1CarouselNext()"></div>
-            <!-- No overlay arrows — tap zones handle navigation -->
-          </div>
-
-          <!-- Dots -->
+          <!-- Dots above the cards -->
           <div class="a1-carousel-dots" id="a1-carousel-dots">
-            <div class="cdot active"></div>
-            <div class="cdot"></div>
-            <div class="cdot"></div>
+            <div class="cdot active" onclick="a1CarouselGo(0)"></div>
+            <div class="cdot" onclick="a1CarouselGo(1)"></div>
+            <div class="cdot" onclick="a1CarouselGo(2)"></div>
           </div>
 
-          <!-- Studio info -->
-          <div class="a1-browse-body">
-            <div class="a1-studio-name" id="a1-studio-name">Cozy Corners</div>
-            <div class="a1-studio-meta" id="a1-studio-meta">8 of 15 designers · 12 milestones hit this week!</div>
+          <!-- Full-card sliding track -->
+          <div class="a1-card-track" id="a1-card-track">
 
-            <!-- Progress bar — Figma Studios/Progress Ripple -->
-            <div class="a1-progress-wrap">
-              <div class="a1-progress-track">
-                <div class="a1-progress-fill" id="a1-progress-fill" style="width: 53%;"></div>
-                <!-- Milestone notches at 25%, 50%, 75%, 100% positions -->
-                <div class="a1-progress-notch reached" style="left: 22%;"></div>
-                <div class="a1-progress-notch reached" style="left: 46%;"></div>
-                <div class="a1-progress-notch unreached" style="left: 70%;"></div>
-                <div class="a1-progress-notch unreached" style="left: 90%;"></div>
+            <!-- Card 1: Cozy Corners -->
+            <div class="a1-studio-card">
+              <div class="a1-card-image">
+                <img src="assets/images/studio-preview-cozy.png" alt="Cozy Corners">
+                <button class="a1-card-arrow left" onclick="a1CarouselPrev()"><svg viewBox="0 0 7 12"><polyline points="6,1 1,6 6,11"/></svg></button>
+                <button class="a1-card-arrow right" onclick="a1CarouselNext()"><svg viewBox="0 0 7 12"><polyline points="1,1 6,6 1,11"/></svg></button>
+              </div>
+              <div class="a1-browse-body">
+                <div class="a1-studio-name">Cozy Corners</div>
+                <div class="a1-studio-meta">8 of 15 designers · 12 milestones hit this week!</div>
+                <div class="a1-progress-wrap">
+                  <div class="a1-progress-track">
+                    <div class="a1-progress-fill" style="width: 53%;"></div>
+                    <div class="a1-progress-notch reached" style="left: 22%;"></div>
+                    <div class="a1-progress-notch reached" style="left: 46%;"></div>
+                    <div class="a1-progress-notch unreached" style="left: 70%;"></div>
+                    <div class="a1-progress-notch unreached" style="left: 90%;"></div>
+                  </div>
+                </div>
+                <div class="a1-gallery">
+                  <img src="assets/images/gallery-1.png" alt="">
+                  <img src="assets/images/gallery-2.png" alt="">
+                  <img src="assets/images/gallery-3.png" alt="">
+                </div>
+                <button class="btn-a1-join" onclick="a1ShowJoin()">Join Studio</button>
               </div>
             </div>
 
-            <!-- Gallery thumbnails -->
-            <div class="a1-gallery">
-              <img src="assets/images/gallery-1.png" alt="">
-              <img src="assets/images/gallery-2.png" alt="">
-              <img src="assets/images/gallery-3.png" alt="">
+            <!-- Card 2: Beautiful Bonanza -->
+            <div class="a1-studio-card">
+              <div class="a1-card-image">
+                <img src="assets/images/studio-preview-bonanza.png" alt="Beautiful Bonanza">
+                <button class="a1-card-arrow left" onclick="a1CarouselPrev()"><svg viewBox="0 0 7 12"><polyline points="6,1 1,6 6,11"/></svg></button>
+                <button class="a1-card-arrow right" onclick="a1CarouselNext()"><svg viewBox="0 0 7 12"><polyline points="1,1 6,6 1,11"/></svg></button>
+              </div>
+              <div class="a1-browse-body">
+                <div class="a1-studio-name">Beautiful Bonanza</div>
+                <div class="a1-studio-meta">3 of 15 designers · 8 milestones hit this week!</div>
+                <div class="a1-progress-wrap">
+                  <div class="a1-progress-track">
+                    <div class="a1-progress-fill" style="width: 20%;"></div>
+                    <div class="a1-progress-notch unreached" style="left: 22%;"></div>
+                    <div class="a1-progress-notch unreached" style="left: 46%;"></div>
+                    <div class="a1-progress-notch unreached" style="left: 70%;"></div>
+                    <div class="a1-progress-notch unreached" style="left: 90%;"></div>
+                  </div>
+                </div>
+                <div class="a1-gallery">
+                  <img src="assets/images/gallery-2.png" alt="">
+                  <img src="assets/images/gallery-3.png" alt="">
+                  <img src="assets/images/gallery-1.png" alt="">
+                </div>
+                <button class="btn-a1-join" onclick="a1ShowJoin()">Join Studio</button>
+              </div>
             </div>
 
-            <!-- Join button -->
-            <button class="btn-a1-join" onclick="a1ShowJoin()">Join Studio</button>
-          </div>
+            <!-- Card 3: Sunset Sanctuary -->
+            <div class="a1-studio-card">
+              <div class="a1-card-image">
+                <img src="assets/images/studio-preview-sanctuary.png" alt="Sunset Sanctuary">
+                <button class="a1-card-arrow left" onclick="a1CarouselPrev()"><svg viewBox="0 0 7 12"><polyline points="6,1 1,6 6,11"/></svg></button>
+                <button class="a1-card-arrow right" onclick="a1CarouselNext()"><svg viewBox="0 0 7 12"><polyline points="1,1 6,6 1,11"/></svg></button>
+              </div>
+              <div class="a1-browse-body">
+                <div class="a1-studio-name">Sunset Sanctuary</div>
+                <div class="a1-studio-meta">5 of 15 designers · 15 milestones hit this week!</div>
+                <div class="a1-progress-wrap">
+                  <div class="a1-progress-track">
+                    <div class="a1-progress-fill" style="width: 100%;"></div>
+                    <div class="a1-progress-notch reached" style="left: 22%;"></div>
+                    <div class="a1-progress-notch reached" style="left: 46%;"></div>
+                    <div class="a1-progress-notch reached" style="left: 70%;"></div>
+                    <div class="a1-progress-notch reached" style="left: 90%;"></div>
+                  </div>
+                </div>
+                <div class="a1-gallery">
+                  <img src="assets/images/gallery-3.png" alt="">
+                  <img src="assets/images/gallery-1.png" alt="">
+                  <img src="assets/images/gallery-2.png" alt="">
+                </div>
+                <button class="btn-a1-join" onclick="a1ShowJoin()">Join Studio</button>
+              </div>
+            </div>
+
+          </div><!-- /a1-card-track -->
         </div>
 
         <!-- Spacer for scroll -->
@@ -1462,6 +1511,13 @@
     void browse.offsetWidth;
     browse.classList.add('visible');
 
+    // Update track position without animation
+    var track = document.getElementById('a1-card-track');
+    if (track) {
+      track.style.transition = 'none';
+      track.style.transform = 'translateX(-' + (a1CarouselIndex * 100) + '%)';
+    }
+
     // Scroll to show browse card
     setTimeout(function() {
       var body = document.getElementById('a1-body');
@@ -1472,9 +1528,8 @@
   /* --- Carousel --- */
 
   function a1CarouselUpdate(animate) {
-    var track = document.getElementById('a1-carousel-track');
+    var track = document.getElementById('a1-card-track');
     var dots = document.querySelectorAll('#a1-carousel-dots .cdot');
-    var studio = a1Studios[a1CarouselIndex];
 
     if (animate === false) {
       track.style.transition = 'none';
@@ -1482,59 +1537,42 @@
       track.style.transition = 'transform 320ms cubic-bezier(0.4, 0, 0.2, 1)';
     }
 
-    // Offset: each slide is 1/3 of the track width (track = 300% wide, each slide = 100%/3 of track = 33.33%)
-    // But since track is 300% wide relative to container, shifting by (index * 33.333)% moves correctly
-    track.style.transform = 'translateX(-' + (a1CarouselIndex * 33.3333) + '%)';
+    // Slide the full-card track — each card is 100% width
+    track.style.transform = 'translateX(-' + (a1CarouselIndex * 100) + '%)';
 
     // Update dots
     dots.forEach(function(dot, i) {
       dot.classList.toggle('active', i === a1CarouselIndex);
     });
-
-    // Update studio info
-    document.getElementById('a1-studio-name').textContent = studio.name;
-    document.getElementById('a1-studio-meta').textContent = studio.meta;
-    document.getElementById('a1-progress-fill').style.width = studio.progress;
-
-    // No overlay arrows — just disable tap zones at boundaries
-    var zones = document.querySelectorAll('.a1-carousel-zone');
-    if (zones.length >= 2) {
-      zones[0].style.pointerEvents = a1CarouselIndex === 0 ? 'none' : 'auto';
-      zones[1].style.pointerEvents = a1CarouselIndex === a1Studios.length - 1 ? 'none' : 'auto';
-    }
   }
 
   function a1CarouselPrev() {
-    if (a1CarouselIndex > 0) {
-      a1CarouselIndex--;
-      a1CarouselUpdate(true);
-    }
+    // Loop: first → last
+    a1CarouselIndex = a1CarouselIndex === 0 ? a1Studios.length - 1 : a1CarouselIndex - 1;
+    a1CarouselUpdate(true);
   }
 
   function a1CarouselNext() {
-    if (a1CarouselIndex < a1Studios.length - 1) {
-      a1CarouselIndex++;
-      a1CarouselUpdate(true);
-    }
+    // Loop: last → first
+    a1CarouselIndex = a1CarouselIndex === a1Studios.length - 1 ? 0 : a1CarouselIndex + 1;
+    a1CarouselUpdate(true);
   }
 
-  // Swipe/drag support for carousel
+  function a1CarouselGo(index) {
+    a1CarouselIndex = index;
+    a1CarouselUpdate(true);
+  }
+
+  // Swipe support for full-card carousel
   (function() {
-    var carousel = document.querySelector('.a1-carousel');
-    if (!carousel) return;
+    var browse = document.getElementById('a1-browse-card');
+    if (!browse) return;
     var startX = 0, isDragging = false;
-    carousel.addEventListener('touchstart', function(e) { startX = e.touches[0].clientX; isDragging = true; });
-    carousel.addEventListener('touchend', function(e) {
+    browse.addEventListener('touchstart', function(e) { startX = e.touches[0].clientX; isDragging = true; });
+    browse.addEventListener('touchend', function(e) {
       if (!isDragging) return;
       isDragging = false;
       var diff = startX - e.changedTouches[0].clientX;
-      if (Math.abs(diff) > 40) { diff > 0 ? a1CarouselNext() : a1CarouselPrev(); }
-    });
-    carousel.addEventListener('mousedown', function(e) { startX = e.clientX; isDragging = true; e.preventDefault(); });
-    carousel.addEventListener('mouseup', function(e) {
-      if (!isDragging) return;
-      isDragging = false;
-      var diff = startX - e.clientX;
       if (Math.abs(diff) > 40) { diff > 0 ? a1CarouselNext() : a1CarouselPrev(); }
     });
   })();
