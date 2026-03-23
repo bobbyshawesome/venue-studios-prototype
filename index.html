@@ -275,7 +275,7 @@
       .btn-a1-explore-studio:hover { transform: scale(1.02); filter: brightness(1.06); }
       .a1-teaser:hover { opacity: 0.85; }
       .a1-teaser:hover .a1-teaser-text { color: var(--coral); }
-      .a1-carousel-zone:hover ~ .a1-carousel-chevron { background: rgba(255,255,255,0.8); }
+      /* carousel tap zones have no visible hover state */
       .btn-begin:hover { transform: scale(1.03); filter: brightness(1.06); }
       .btn-yellow-pill:hover { transform: scale(1.03); filter: brightness(1.06); }
     }
@@ -465,6 +465,7 @@
     .a1-carousel-slide img {
       width: 100%; height: 100%;
       object-fit: cover;
+      object-position: center 30%;
       display: block;
     }
     /* All slides use real images from Figma — no tinting needed */
@@ -480,31 +481,7 @@
     }
     .a1-carousel-zone.left { left: 0; }
     .a1-carousel-zone.right { right: 0; }
-    /* Chevron indicators — visual only, not interactive */
-    .a1-carousel-chevron {
-      position: absolute;
-      top: 50%; transform: translateY(-50%);
-      width: 25px; height: 39px;
-      background: rgba(255,255,255,0.55);
-      display: flex; align-items: center; justify-content: center;
-      pointer-events: none;
-    }
-    .a1-carousel-chevron.left {
-      left: 0;
-      border-radius: 0 6px 6px 0;
-    }
-    .a1-carousel-chevron.right {
-      right: 0;
-      border-radius: 6px 0 0 6px;
-    }
-    .a1-carousel-chevron svg {
-      width: 7px; height: 12px;
-      stroke: var(--brown);
-      stroke-width: 2;
-      fill: none;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
+    /* No overlay chevrons — tap zones handle interaction, dots show position */
 
     /* Carousel dots */
     .a1-carousel-dots {
@@ -1090,13 +1067,7 @@
             <!-- Tap zones: left half = prev, right half = next -->
             <div class="a1-carousel-zone left" onclick="a1CarouselPrev()"></div>
             <div class="a1-carousel-zone right" onclick="a1CarouselNext()"></div>
-            <!-- Visual-only chevron indicators -->
-            <div class="a1-carousel-chevron left">
-              <svg viewBox="0 0 7 12"><polyline points="6,1 1,6 6,11"/></svg>
-            </div>
-            <div class="a1-carousel-chevron right">
-              <svg viewBox="0 0 7 12"><polyline points="1,1 6,6 1,11"/></svg>
-            </div>
+            <!-- No overlay arrows — tap zones handle navigation -->
           </div>
 
           <!-- Dots -->
@@ -1525,13 +1496,10 @@
     document.getElementById('a1-studio-meta').textContent = studio.meta;
     document.getElementById('a1-progress-fill').style.width = studio.progress;
 
-    // Update chevron visibility based on position
-    var chevrons = document.querySelectorAll('.a1-carousel-chevron');
+    // No overlay arrows — just disable tap zones at boundaries
     var zones = document.querySelectorAll('.a1-carousel-zone');
-    if (chevrons.length >= 2 && zones.length >= 2) {
-      chevrons[0].style.opacity = a1CarouselIndex === 0 ? '0.3' : '1';
+    if (zones.length >= 2) {
       zones[0].style.pointerEvents = a1CarouselIndex === 0 ? 'none' : 'auto';
-      chevrons[1].style.opacity = a1CarouselIndex === a1Studios.length - 1 ? '0.3' : '1';
       zones[1].style.pointerEvents = a1CarouselIndex === a1Studios.length - 1 ? 'none' : 'auto';
     }
   }
